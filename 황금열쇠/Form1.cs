@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +9,7 @@ namespace 황금열쇠
     {
         private readonly Thread thread;
         private GoldenKey GK;
+        public bool ReadyBool = false;
         public string Key
         {
             get { return keyBox.Text; }
@@ -22,9 +17,10 @@ namespace 황금열쇠
         }
         public bool IsReady
         {
-            get { return nextButton.Enabled; }
+            get { return ReadyBool; }
             set 
             { 
+                ReadyBool = value;
                 nextButton.Enabled = value; 
                 rerollButton.Enabled = value;
                 if (value) goldenKeyLabel.Text = "황금 열쇠 준비 완료!";
@@ -69,11 +65,29 @@ namespace 황금열쇠
             }
         }
 
-        private void NextButton_Click(object sender, EventArgs e)
+        private async void NextButton_Click(object sender, EventArgs e)
         {
-            goldenKeyLabel.Text = GK.goldenKeys.First();
-            GK.goldenKeys.RemoveAt(0);
+            nextButton.Enabled = false;
+            rerollButton.Enabled = false;
+
+            Random rnd = new Random();
+            int x = 0;
+            int y = 0;
+            int l = 10;
+
+            while (l < 1500)
+            {
+                x = rnd.Next(0, GK.goldenKeys.Count);
+                goldenKeyLabel.Text = GK.goldenKeys[x];
+                await Task.Delay(l);
+                l += (int)(10 * Math.Pow(1.5, y));
+                y++;
+            }
+
+            GK.goldenKeys.RemoveAt(x);
+            rerollButton.Enabled = true;
             if (GK.goldenKeys.Count == 0) nextButton.Enabled = false;
+            else nextButton.Enabled = true;
         }
 
         private void RerollButton_Click(object sender, EventArgs e)
