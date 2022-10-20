@@ -10,19 +10,17 @@ namespace 황금열쇠
         public Form1 parent;
         private Graphics g;
         private Rectangle rect;
-        private readonly Random rnd = new Random();
         private float angle = 0;
         private float diff = 50;
         private int index = 0;
         private bool IsStopped = false;
         public List<(string name, Color plateColor)> options = new List<(string, Color)>();
 
-        public string GetOption
+        public (string, Color) GetOption
         {
             set
             {
-                Color color = Color.FromArgb(255, rnd.Next(128, 256), rnd.Next(128, 256), rnd.Next(128, 256));
-                options.Add((value, color));
+                options.Add(value);
                 DrawWheel();
             }
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -8,6 +8,7 @@ namespace 황금열쇠
     public partial class Form1 : Form
     {
         private readonly Thread thread;
+        private readonly Random rnd = new Random();
         private GoldenKey GK;
         public bool ReadyBool = false;
         
@@ -21,13 +22,15 @@ namespace 황금열쇠
         {
             set
             {
-                wheel1.GetOption = value;
+                Color color = Color.FromArgb(255, rnd.Next(128, 256), rnd.Next(128, 256), rnd.Next(128, 256));
+                wheel1.GetOption = (value, color);
                 panel1.Controls.Add(new Label
                 {
                     Text = (panel1.Controls.Count + 1).ToString() + ". " + value,
-                    Font = new System.Drawing.Font("강원교육모두 Bold", 16),
-                    Location = new System.Drawing.Point(0, 24 * panel1.Controls.Count),
-                    Size = new System.Drawing.Size(300, 24)
+                    Font = new Font("강원교육모두 Bold", 16),
+                    Location = new Point(0, 24 * panel1.Controls.Count),
+                    Size = new Size(panel1.Width, panel1.Height / 20),
+                    BackColor = color
                 });
             }
         }
