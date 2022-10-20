@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace 황금열쇠
@@ -10,22 +10,57 @@ namespace 황금열쇠
         private readonly Thread thread;
         private GoldenKey GK;
         public bool ReadyBool = false;
+        
         public string Key
         {
             get { return keyBox.Text; }
             set { keyBox.Text = value; }
         }
+
+        public string Option
+        {
+            set
+            {
+                wheel1.GetOption = value;
+                panel1.Controls.Add(new Label
+                {
+                    Text = (panel1.Controls.Count + 1).ToString() + ". " + value,
+                    Font = new System.Drawing.Font("강원교육모두 Bold", 16),
+                    Location = new System.Drawing.Point(0, 24 * panel1.Controls.Count),
+                    Size = new System.Drawing.Size(300, 24)
+                });
+            }
+        }
+
+        public string Selected
+        {
+            set => goldenKeyLabel.Text = value;
+        }
+
         public bool IsReady
         {
             get { return ReadyBool; }
             set 
             { 
                 ReadyBool = value;
-                nextButton.Enabled = value; 
-                rerollButton.Enabled = value;
+                WheelStopped = value;
                 if (value) goldenKeyLabel.Text = "황금 열쇠 준비 완료!";
                 else goldenKeyLabel.Text = "황금 열쇠 준비중";
             }
+        }
+
+        public bool WheelStopped
+        {
+            set
+            {
+                nextButton.Enabled = value;
+                rerollButton.Enabled = value;
+            }
+        }
+
+        public void RemoveOption(int index)
+        {
+            panel1.Controls[index].Dispose();
         }
 
         public Form1()
@@ -35,6 +70,8 @@ namespace 황금열쇠
             GK.CheckCode();
             GK.Payload = string.Empty;
             thread = new Thread(new ThreadStart(GK.Connect));
+
+            wheel1.parent = this;
         }
 
         private void KeyBox_TextChanged(object sender, EventArgs e)
@@ -65,35 +102,29 @@ namespace 황금열쇠
             }
         }
 
-        private async void NextButton_Click(object sender, EventArgs e)
+        private void NextButton_Click(object sender, EventArgs e)
         {
-            nextButton.Enabled = false;
-            rerollButton.Enabled = false;
-
-            Random rnd = new Random();
-            int x = 0;
-            int y = 0;
-            int l = 10;
-
-            while (l < 1500)
+            if (nextButton.Text == "다음 황금열쇠")
             {
-                x = rnd.Next(0, GK.goldenKeys.Count);
-                goldenKeyLabel.Text = GK.goldenKeys[x];
-                await Task.Delay(l);
-                l += (int)(10 * Math.Pow(1.5, y));
-                y++;
+                wheel1.RotateWheel = true;
+                nextButton.Text = "멈추기";
+                rerollButton.Enabled = false;
             }
-
-            GK.goldenKeys.RemoveAt(x);
-            rerollButton.Enabled = true;
-            if (GK.goldenKeys.Count == 0) nextButton.Enabled = false;
-            else nextButton.Enabled = true;
+            else
+            {
+                wheel1.RotateWheel = false;
+                nextButton.Text = "다음 황금열쇠";
+                nextButton.Enabled = false;
+                GK.count -= 1;
+            }
         }
 
         private void RerollButton_Click(object sender, EventArgs e)
         {
+            wheel1.ResetWheel();
+            panel1.Controls.Clear();
             IsReady = false;
-            GK.goldenKeys.Clear();
+            GK.count = 0;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)

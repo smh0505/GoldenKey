@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -13,10 +12,11 @@ namespace 황금열쇠
     public class GoldenKey
     {
         public string Payload { get; set; }
-        public List<string> goldenKeys = new List<string>();
+        public int count = 0;
         private readonly string FileName = "setting.ini";
         private Form1 mainWindow;
         private delegate void GetReady();
+        private delegate void AddOption(string option);
 
         public GoldenKey(Form1 window)
         {
@@ -71,13 +71,22 @@ namespace 황금열쇠
                     {
                         var roulette = Regex.Match(msg.ToString(), "\"message\":\"[^\"]* - [^\"]*\"").Value.Substring(10);
                         var rValue = roulette.Split('-')[1].Replace("\"", "").Substring(1);
-                        if (!mainWindow.IsReady && goldenKeys.Count < 20) goldenKeys.Add(rValue);
-                        if (!mainWindow.IsReady && goldenKeys.Count == 20) mainWindow.Invoke(new GetReady(SetReady));
+                        if (!mainWindow.IsReady && count < 20)
+                        {
+                            mainWindow.BeginInvoke(new AddOption(Option), rValue);
+                            count++;
+                        }
+                        if (!mainWindow.IsReady && count == 20) mainWindow.Invoke(new GetReady(SetReady));
                     }
                 });
                 client.Start();
                 exitEvent.WaitOne();
             }
+        }
+
+        private void Option(string rValue)
+        {
+            mainWindow.Option = rValue;
         }
 
         private void SetReady()
