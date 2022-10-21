@@ -28,9 +28,10 @@ namespace 황금열쇠
                 {
                     Text = (panel1.Controls.Count + 1).ToString() + ". " + value,
                     Font = new Font("강원교육모두 Bold", 16),
-                    Location = new Point(0, 24 * panel1.Controls.Count),
-                    Size = new Size(panel1.Width, panel1.Height / 20),
-                    BackColor = color
+                    Location = new Point(0, 30 * panel1.Controls.Count),
+                    Size = new Size(panel1.Width, 30),
+                    BackColor = color,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 });
             }
         }
@@ -63,6 +64,9 @@ namespace 황금열쇠
 
         public void RemoveOption(int index)
         {
+            MessageBox.Show("이번 황금열쇠는\n" +
+                panel1.Controls[index].Text +
+                "\n입니다.", "황금열쇠");
             panel1.Controls[index].Dispose();
         }
 
@@ -96,6 +100,7 @@ namespace 황금열쇠
                 thread.Start();
                 MessageBox.Show("투네이션 연결에 성공했습니다.",
                     "황금열쇠");
+                splitContainer1.Panel2Collapsed = true;
             }
             else
             {

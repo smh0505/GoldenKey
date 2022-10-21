@@ -148,7 +148,7 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(563, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(335, 523);
+            this.panel1.Size = new System.Drawing.Size(335, 638);
             this.panel1.TabIndex = 1;
             // 
             // wheel1
@@ -169,6 +169,7 @@
             this.ClientSize = new System.Drawing.Size(899, 638);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitContainer1);
+            this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(300, 200);
             this.Name = "Form1";
             this.Text = "황금열쇠";

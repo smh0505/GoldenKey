@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace 황금열쇠
@@ -53,7 +54,7 @@ namespace 황금열쇠
             if (Width > Height) x = Height;
             else x = Width;
             rect = new Rectangle((Width - x) / 2, (Height - x) / 2, x, x);
-            if (options.Count > 0) DrawWheel();
+            if (g != null) DrawWheel();
         }
 
         private void DrawWheel()
@@ -66,6 +67,19 @@ namespace 황금열쇠
                 g.DrawPie(new Pen(Brushes.Black), rect, theta, 360F / options.Count);
                 theta += 360F / options.Count;
             }
+            Point[] triangle = new Point[3]
+            {
+                new Point(rect.Right + 10, rect.Top + (rect.Height / 2) - 20),
+                new Point(rect.Right - 10, rect.Top + (rect.Height / 2)),
+                new Point(rect.Right + 10, rect.Top + (rect.Height / 2) + 20),
+            };
+            byte[] triangleEdges = new byte[3]
+            {
+                (byte)PathPointType.Line,
+                (byte)PathPointType.Line,
+                (byte)PathPointType.Line
+            };
+            g.FillPath(Brushes.Black, new GraphicsPath(triangle, triangleEdges));
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -86,16 +100,9 @@ namespace 황금열쇠
                 diff = 50;
                 options.RemoveAt(index);
                 parent.RemoveOption(index);
-                if (options.Count > 0)
-                {
-                    DrawWheel();
-                    parent.WheelStopped = true;
-                }
-                else
-                {
-                    g.Clear(BackColor);
-                    parent.ReadyBool = false;
-                }
+                DrawWheel();
+                if (options.Count > 0) parent.WheelStopped = true;
+                else parent.ReadyBool = false;                
             }
         }
 

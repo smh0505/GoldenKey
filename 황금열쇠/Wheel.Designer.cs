@@ -41,6 +41,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.DoubleBuffered = true;
             this.Name = "Wheel";
             this.Size = new System.Drawing.Size(273, 278);
             this.SizeChanged += new System.EventHandler(this.Wheel_SizeChanged);
