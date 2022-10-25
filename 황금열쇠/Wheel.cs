@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -9,22 +8,12 @@ namespace 황금열쇠
     public partial class Wheel : UserControl
     {
         public Form1 parent;
-        private Graphics g;
+        public Graphics g;
         private Rectangle rect;
         private float angle = 0;
         private float diff = 50;
-        private int index = 0;
+        private Option target;
         private bool IsStopped = false;
-        public List<(string name, Color plateColor)> options = new List<(string, Color)>();
-
-        public (string, Color) GetOption
-        {
-            set
-            {
-                options.Add(value);
-                DrawWheel();
-            }
-        }
 
         public bool RotateWheel
         {
@@ -35,12 +24,6 @@ namespace 황금열쇠
             }
         }
 
-        public void ResetWheel()
-        {
-            options.Clear();
-            UpdateRect();
-        }
-
         public Wheel()
         {
             InitializeComponent();
@@ -49,24 +32,30 @@ namespace 황금열쇠
 
         private void UpdateRect()
         {
-            if (g != null) g.Clear(BackColor);
+            if (g != null) g.Dispose();
+            g = CreateGraphics();
+            g.Clear(BackColor);
             int x;
             if (Width > Height) x = Height;
             else x = Width;
             rect = new Rectangle((Width - x) / 2, (Height - x) / 2, x, x);
-            if (g != null) DrawWheel();
+            DrawWheel();
         }
 
-        private void DrawWheel()
+        public void DrawWheel()
         {
             float theta = angle;
-            foreach (var option in options)
+            if (parent != null)
             {
-                var brush = new SolidBrush(option.plateColor);
-                g.FillPie(brush, rect, theta, 360F / options.Count);
-                g.DrawPie(new Pen(Brushes.Black), rect, theta, 360F / options.Count);
-                theta += 360F / options.Count;
+                foreach (var option in parent.Options)
+                {
+                    var brush = new SolidBrush(option.color);
+                    g.FillPie(brush, rect, theta, option.count * 360F / parent.Sum);
+                    g.DrawPie(new Pen(Brushes.Black), rect, theta, option.count * 360F / parent.Sum);
+                    theta += option.count * 360F / parent.Sum;
+                }
             }
+
             Point[] triangle = new Point[3]
             {
                 new Point(rect.Right + 10, rect.Top + (rect.Height / 2) - 20),
@@ -87,10 +76,10 @@ namespace 황금열쇠
             if (diff > 0)
             {
                 angle -= diff;
-                if (angle < 0) angle += 360;
+                if (angle <= 0) angle += 360;
                 DrawWheel();
-                index = (int)Math.Floor((360 - angle) / (360 / options.Count)) % options.Count;
-                parent.Selected = options[index].name;
+                target = Output((int)Math.Floor((360F - angle) / (360F / parent.Sum)) % parent.Sum);
+                parent.Selected = target.name;
                 if (IsStopped) diff -= (float)(1 / Math.PI);
             }
             else
@@ -98,17 +87,30 @@ namespace 황금열쇠
                 timer1.Stop();
                 IsStopped = false;
                 diff = 50;
-                options.RemoveAt(index);
-                parent.RemoveOption(index);
+                parent.RemoveOption(parent.Options.IndexOf(target));
+                parent.IsReady = true;
                 DrawWheel();
-                if (options.Count > 0) parent.WheelStopped = true;
-                else parent.ReadyBool = false;                
             }
+        }
+
+        private Option Output(int index)
+        {
+            Option temp = new Option(string.Empty, Color.Empty, 0);
+            int current = 0;
+            foreach (var x in parent.Options)
+            {
+                if (current > index) break;
+                else
+                {
+                    temp = x;
+                    current += x.count;
+                }
+            }
+            return temp;
         }
 
         private void Wheel_Paint(object sender, PaintEventArgs e)
         {
-            g = CreateGraphics();
             UpdateRect();
         }
 

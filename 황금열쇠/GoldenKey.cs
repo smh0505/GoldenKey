@@ -4,16 +4,28 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Websocket.Client;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace 황금열쇠
 {
+    public struct Default
+    {
+        public string key;
+        public List<string> values;
+
+        public Default(string key, List<string> values)
+        {
+            this.key = key;
+            this.values = values;
+        }
+    }
+
     public class GoldenKey
     {
         public string Payload { get; set; }
-        public int count = 0;
-        private readonly string FileName = "setting.ini";
+        public Default setting;
         private Form1 mainWindow;
         private delegate void GetReady();
         private delegate void AddOption(string option);
@@ -25,17 +37,12 @@ namespace 황금열쇠
 
         public void CheckCode()
         {
-            if (File.Exists(FileName))
+            if (File.Exists("default.json"))
             {
-                StreamReader r = new StreamReader(FileName);
-                var line = r.ReadLine();
-                if (line.Contains("Key="))
-                {
-                    var key = line.Substring(4);
-                    mainWindow.Key = key;
-                }
-                else MessageBox.Show("오류: 투네이션 비밀키를 찾을 수 없습니다.",
-                        "황금열쇠");
+                StreamReader r = new StreamReader("default.json");
+                setting = JsonConvert.DeserializeObject<Default>(r.ReadToEnd());
+                if (setting.key != null) mainWindow.Key = setting.key;
+                foreach (var item in setting.values) mainWindow.AddOption(item);
                 r.Close();
             }
         }
@@ -51,8 +58,9 @@ namespace 황금열쇠
                     var line = Regex.Match(body, "\"payload\":\"[^\"]*\"").Value;
                     Payload = Regex.Match(line, @"[\w]{8,}").Value;
 
-                    StreamWriter w = new StreamWriter(FileName);
-                    w.Write("Key=" + key);
+                    StreamWriter w = new StreamWriter("default.json");
+                    setting.key = key;
+                    w.Write(JsonConvert.SerializeObject(setting));
                     w.Close();
                 }
             }
@@ -71,27 +79,13 @@ namespace 황금열쇠
                     {
                         var roulette = Regex.Match(msg.ToString(), "\"message\":\"[^\"]* - [^\"]*\"").Value.Substring(10);
                         var rValue = roulette.Split('-')[1].Replace("\"", "").Substring(1);
-                        if (!mainWindow.IsReady && count < 20)
-                        {
-                            mainWindow.BeginInvoke(new AddOption(Option), rValue);
-                            count++;
-                        }
-                        if (!mainWindow.IsReady && count == 20) mainWindow.Invoke(new GetReady(SetReady));
+                        if (!mainWindow.ReadyBool && mainWindow.Sum < 100)
+                            mainWindow.BeginInvoke(new AddOption(mainWindow.AddOption), rValue);
                     }
                 });
                 client.Start();
                 exitEvent.WaitOne();
             }
-        }
-
-        private void Option(string rValue)
-        {
-            mainWindow.Option = rValue;
-        }
-
-        private void SetReady()
-        {
-            mainWindow.IsReady = true;
         }
     }
 }
