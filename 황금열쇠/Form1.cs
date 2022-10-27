@@ -28,6 +28,7 @@ namespace 황금열쇠
         private readonly AlertForm AF;
         public bool ReadyBool = false;
         public List<Option> Options = new List<Option>();
+        public List<string> TempOpts = new List<string>();
         
         public string Key { set => keyBox.Text = value; }
         public string Selected { set => goldenKeyLabel.Text = value; }
@@ -45,7 +46,7 @@ namespace 황금열쇠
             set
             {
                 nextButton.Enabled = value;
-                rerollButton.Enabled = value;
+                if (value) nextButton.Text = "다음 황금열쇠";
             }
         }
 
@@ -83,6 +84,21 @@ namespace 황금열쇠
             }
             
             wheel1.DrawWheel();
+        }
+
+        public void ReadOption(string name)
+        {
+            TempOpts.Add(name);
+            if (nextButton.Text == "다음 황금열쇠" && nextButton.Enabled) FillOption();
+        }
+
+        public void FillOption()
+        {
+            foreach (var option in TempOpts)
+            {
+                AddOption(option);
+            }
+            TempOpts.Clear();
         }
 
         public void RemoveOption(int index)
@@ -139,7 +155,7 @@ namespace 황금열쇠
                 MessageBox.Show("투네이션 연결에 성공했습니다.",
                     "황금열쇠");
                 splitContainer1.Panel2Collapsed = true;
-                rerollButton.Enabled = true;
+                nextButton.Enabled = true;
             }
             else
             {
@@ -155,29 +171,19 @@ namespace 황금열쇠
             {
                 wheel1.RotateWheel = true;
                 nextButton.Text = "멈추기";
-                rerollButton.Enabled = false;
             }
             else
             {
                 wheel1.RotateWheel = false;
-                nextButton.Text = "다음 황금열쇠";
                 nextButton.Enabled = false;
             }
         }
 
-        private void RerollButton_Click(object sender, EventArgs e)
+        private void DebugButton_Click(object sender, EventArgs e)
         {
-            if (rerollButton.Text == "그만 받기")
+            using (Form3 Debug = new Form3(this))
             {
-                rerollButton.Text = "계속 받기";
-                nextButton.Enabled = true;
-                ReadyBool = true;
-            }
-            else
-            {
-                rerollButton.Text = "그만 받기";
-                nextButton.Enabled = false;
-                ReadyBool = false;
+                Debug.ShowDialog();
             }
         }
 

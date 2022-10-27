@@ -79,8 +79,8 @@ namespace 황금열쇠
                     {
                         var roulette = Regex.Match(msg.ToString(), "\"message\":\"[^\"]* - [^\"]*\"").Value.Substring(10);
                         var rValue = roulette.Split('-')[1].Replace("\"", "").Substring(1);
-                        if (!mainWindow.ReadyBool && mainWindow.Sum < 100)
-                            mainWindow.BeginInvoke(new AddOption(mainWindow.AddOption), rValue);
+                        if (rValue != "꽝")
+                            mainWindow.BeginInvoke(new AddOption(mainWindow.ReadOption), rValue);
                     }
                 });
                 client.Start();

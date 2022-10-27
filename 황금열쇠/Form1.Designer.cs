@@ -30,13 +30,13 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.goldenKeyLabel = new System.Windows.Forms.Label();
-            this.rerollButton = new System.Windows.Forms.Button();
             this.nextButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.connectButton = new System.Windows.Forms.Button();
             this.keyBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.wheel1 = new 황금열쇠.Wheel();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -55,9 +55,9 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.button1);
             this.splitContainer1.Panel1.Controls.Add(this.wheel1);
             this.splitContainer1.Panel1.Controls.Add(this.goldenKeyLabel);
-            this.splitContainer1.Panel1.Controls.Add(this.rerollButton);
             this.splitContainer1.Panel1.Controls.Add(this.nextButton);
             // 
             // splitContainer1.Panel2
@@ -81,18 +81,6 @@
             this.goldenKeyLabel.TabIndex = 4;
             this.goldenKeyLabel.Text = "황금열쇠";
             this.goldenKeyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // rerollButton
-            // 
-            this.rerollButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.rerollButton.Enabled = false;
-            this.rerollButton.Location = new System.Drawing.Point(10, 415);
-            this.rerollButton.Name = "rerollButton";
-            this.rerollButton.Size = new System.Drawing.Size(111, 50);
-            this.rerollButton.TabIndex = 2;
-            this.rerollButton.Text = "그만 받기";
-            this.rerollButton.UseVisualStyleBackColor = true;
-            this.rerollButton.Click += new System.EventHandler(this.RerollButton_Click);
             // 
             // nextButton
             // 
@@ -145,6 +133,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.AutoScroll = true;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(582, 0);
             this.panel1.Name = "panel1";
@@ -161,6 +150,18 @@
             this.wheel1.Name = "wheel1";
             this.wheel1.Size = new System.Drawing.Size(548, 353);
             this.wheel1.TabIndex = 5;
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button1.Location = new System.Drawing.Point(10, 415);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(107, 50);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "디버그";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.DebugButton_Click);
             // 
             // Form1
             // 
@@ -190,10 +191,10 @@
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button nextButton;
-        private System.Windows.Forms.Button rerollButton;
         private System.Windows.Forms.Label goldenKeyLabel;
         private Wheel wheel1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

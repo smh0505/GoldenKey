@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -45,6 +46,7 @@ namespace 황금열쇠
         public void DrawWheel()
         {
             float theta = angle;
+            
             if (parent != null)
             {
                 foreach (var option in parent.Options)
@@ -55,7 +57,7 @@ namespace 황금열쇠
                     theta += option.count * 360F / parent.Sum;
                 }
             }
-
+            
             Point[] triangle = new Point[3]
             {
                 new Point(rect.Right + 10, rect.Top + (rect.Height / 2) - 20),
@@ -89,6 +91,7 @@ namespace 황금열쇠
                 diff = 50;
                 parent.RemoveOption(parent.Options.IndexOf(target));
                 parent.IsReady = true;
+                parent.FillOption();
                 DrawWheel();
             }
         }
