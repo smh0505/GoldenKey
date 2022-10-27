@@ -9,3 +9,9 @@
 - 일부 코드는 이전 프로젝트인 [리듬 끝말잇기 툴](https://github.com/smh0505/Rhythm-Relay-CSharp)에서 가져왔습니다.
 ## 사용된 라이브러리
 - Newtonsoft.Json
+- Websocket.Client
+## Special Thanks
+[김편집_](https://www.twitch.tv/arpa__)
+## 라이선스: MIT
+## 후원: [Ko-fi](https://ko-fi.com/bloppyhb)
+가시는 길에 500원짜리 동전 세개 정도 던져주시면 코드 깎는데 도움이 됩니다.
